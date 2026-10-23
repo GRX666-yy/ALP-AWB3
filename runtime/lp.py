@@ -1,4 +1,4 @@
-"""Current LP construction and E100 primitives; bindings supplied by common."""
+"""LP construction and E100 primitives; bindings supplied by common."""
 import time,sys
 import numpy as np
 import highspy
@@ -65,7 +65,7 @@ def run_lp(lp,tracker,stats):
 def adaptive(inst,lp,solution,tracker,stats):
     order,x,rc=lp_order(solution);selected=x==1.;L=[int(j) for j in order if selected[j]]
     load=inst.weights[selected].sum(0)
-    # Numerical tolerance is only used to classify LP variables; integer feasibility is exact-checked.
+    # Check the rounded LP selection against the resource capacities.
     if np.any(load>inst.capacity+1e-8):return ordered_fill(inst,order,tracker)
     available=~selected
     tracker.offer(selected)
@@ -138,7 +138,7 @@ def construct(inst,kind,seed,tracker,stats,context=None):
     if kind=='adaptive':x,L=old.adaptive(inst,lp,sol,tracker,stats)
     else:x,L=old.ordered_fill(inst,order,tracker)
     stats['construction_complete']=time.perf_counter()<tracker.deadline
-    # The common start always retains all guarded candidates. Preserve actual addition order where applicable.
+    # Preserve insertion order for the incumbent retained after construction.
     best=tracker.selected.copy()
     if not np.array_equal(best,x):
         L=[int(j) for j in L if best[j]];seen=set(L)

@@ -4,13 +4,13 @@ English | [中文](README.md)
 
 ALP-AWB3 is a low-latency matheuristic for the **0–1 multidimensional knapsack problem**. Given item profits, resource consumptions, and resource capacities, it returns an item subset satisfying every capacity constraint.
 
-The method constructs a feasible solution using adaptive linear programming and jointly reselects items in at most three restricted cores, each containing at most 20 items. Additional windows alternate removal and insertion candidates and roll forward by retaining 10 items and introducing 10 new ones. Price-assisted bitmaps accelerate resource-feasible pairing of half-table states; half-table and complete-subproblem caches reuse overlapping computation. The three-core cap includes the initial core. The current configuration requires no second global-LP construction, GNN, Transformer, pheromone mechanism, or learned weights.
+The method constructs a feasible solution using adaptive linear programming and jointly reselects items in at most three restricted cores, each containing at most 20 items. Additional windows alternate removal and insertion candidates and roll forward by retaining 10 items and introducing 10 new ones. Price-assisted bitmaps accelerate resource-feasible pairing of half-table states; half-table and complete-subproblem caches reuse overlapping computation. The three-core cap includes the initial core.
 
-This repository contains the current solver and usage documentation. Experimental datasets, experimental settings, recorded experimental environments, and manuscript files are not included.
+This repository provides the solver, a Python API, and a JSON command-line interface.
 
 ## Installation
 
-The validated Python version is **3.12**. The solver depends only on NumPy and the HiGHS Python interface (`highspy`), pinned in `requirements.txt`. PyTorch, CPLEX, and a GPU are not required.
+The validated Python version is **3.12**. The solver uses NumPy and the HiGHS Python interface (`highspy`), with versions pinned in `requirements.txt`.
 
 ```bash
 git clone https://github.com/GRX666-yy/ALP-AWB3.git
@@ -40,7 +40,7 @@ Replace `python` with `python3` if that is the command used by your system.
 
 ## Python API
 
-The following six-item, two-resource input is an illustrative usage example, not experimental data.
+The following six-item, two-resource example demonstrates the Python API.
 
 ```python
 from solve import solve
@@ -90,15 +90,15 @@ Main result fields:
 |`budget_s`|Improvement-admission budget, in seconds|
 |`events`|Admitted improvement trajectory, including time, profit, and packed subsets|
 |`stats`|Construction, window, cache, and bitmap-pairing statistics|
-|`model_version`|Current frozen configuration identifier, `88`|
+|`model_version`|Configuration version identifier, `88`|
 
 `selected` is an internal hexadecimal packed bit vector; use `selected_ids` for ordinary applications. Neither timing field includes Python startup, module imports, or JSON file I/O.
 
 ## Budget and execution semantics
 
-The budget controls the **deadline for admitting feasible improvements**; actual return can occur later. If an extremely short budget permits no positive-profit admission, the solver returns the empty feasible subset with profit 0. The method searches a finite neighborhood and does not guarantee global optimality.
+The budget controls the **deadline for admitting feasible improvements**; actual return can occur later. If an extremely short budget permits no positive-profit admission, the solver returns the empty feasible subset with profit 0.
 
-The implementation uses temporary module patching. Calls in the same process must therefore be **sequential**. Use separate independent processes for parallel instances, rather than concurrent threads invoking the solver. Numerical-library thread counts are set to one when the solver is imported.
+The implementation uses temporary module patching. Calls in the same process must therefore be **sequential**. Use separate independent processes for parallel instances. Numerical-library thread counts are set to one when the solver is imported.
 
 ## Code layout and version
 
@@ -115,4 +115,4 @@ runtime/
   bitmap.py, common.py   Bitmap pairing and dependency assembly
 ```
 
-This compact runtime has configuration identifier `mdkp-bitmap-three-core-v88`. It preserves the active execution path and reconnects required functions through local modules; the complete historical measurement sources are archived separately. Documentation updates change neither the solver configuration nor historical experimental results.
+Configuration identifier: `mdkp-bitmap-three-core-v88`.

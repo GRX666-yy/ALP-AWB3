@@ -1,4 +1,4 @@
-"""Deadline-aware exact restricted search; no solver or model dependencies."""
+"""Deadline-aware exact search over restricted item sets."""
 import time
 import numpy as np
 from common import CORE
@@ -89,7 +89,7 @@ def optimize(profit,weight,capacity,initial,prices,deadline,variant,publish):
         if not len(ids):continue
         stats['left_rows_done']+=len(ids);result=None;done=True
         if MODE=='prefix':
-            # Keep original 64-left dense computation, safely trim whole right tail.
+            # Process 64 left rows at a time and trim non-improving right rows.
             count=int(np.count_nonzero(float(pa[ids].max())+pb>best+1e-9))
             stats['right_prefix_slots_pruned']+=len(ids)*(len(pb)-count)
             if not count:continue

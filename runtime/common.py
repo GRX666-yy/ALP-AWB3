@@ -1,4 +1,4 @@
-"""Bind only the current algorithm's required functions; no legacy model loading."""
+"""Assemble the algorithm dependencies from local runtime modules."""
 from pathlib import Path
 from types import SimpleNamespace
 import importlib.util,sys

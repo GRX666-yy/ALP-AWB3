@@ -1,4 +1,4 @@
-"""Current E100 prefix dispatch; only the frozen arm is bound."""
+"""E100 prefix construction and dispatch."""
 import time
 import numpy as np
 NEURAL=()

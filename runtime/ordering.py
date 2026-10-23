@@ -1,4 +1,4 @@
-"""Frozen selected/complement candidate alternation."""
+"""Selected/complement candidate alternation."""
 from itertools import zip_longest
 def difference_stream(inst,current,guide,universe,features,stats):
     ranked=v61.candidate_pool(inst,current,features,stats,len(current))

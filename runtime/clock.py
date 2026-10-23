@@ -1,4 +1,4 @@
-"""Correct cumulative HiGHS time limit under one admission clock."""
+"""Cumulative HiGHS time limits under a shared admission clock."""
 import time
 import highspy
 from unittest.mock import patch
